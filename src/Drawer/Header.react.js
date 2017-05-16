@@ -57,7 +57,7 @@ class Header extends PureComponent {
         if (image) {
             return (
                 <View>
-                    {React.cloneElement(image, { style: [{ height: flatten.height }] })}
+                    {React.cloneElement(image)}
                     <View style={[styles.container]}>
                         {content}
                     </View>
