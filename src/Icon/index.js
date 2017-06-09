@@ -10,6 +10,7 @@ import OcticonsVectorIcon from 'react-native-vector-icons/Octicons';
 import ZocialVectorIcon from 'react-native-vector-icons/Zocial';
 import SimpleLineIconsVectorIcon from 'react-native-vector-icons/SimpleLineIcons';
 import React, { PureComponent, PropTypes } from 'react';
+import { View } from 'react-native';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 const propTypes = {
@@ -17,6 +18,7 @@ const propTypes = {
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     size: PropTypes.number,
     color: PropTypes.string,
+    rounded: PropTypes.bool
 };
 const defaultProps = { };
 const contextTypes = {
@@ -25,11 +27,15 @@ const contextTypes = {
 
 class Icon extends PureComponent {
     render() {
-        const { name, style, size, color } = this.props;
-        const { palette, spacing } = this.context.uiTheme;
+        const { name, style, size, color, rounded } = this.props
+        const { palette, spacing } = this.context.uiTheme
 
-        const iconColor = color || palette.secondaryTextColor;
-        const iconSize = size || spacing.iconSize;
+        let iconColor = color || palette.secondaryTextColor
+        let iconSize = size || spacing.iconSize
+        let iconRounded = false
+        if (rounded) {
+            iconRounded = true
+        }
 
         let iconSetName = ''
         let iconName = ''
@@ -40,82 +46,108 @@ class Icon extends PureComponent {
             const splitted = name.split('/')
             iconSetName = splitted[0]
             iconName = splitted[1]
+            if (splitted.length > 2) {
+                if (splitted[2] !== '') {
+                    iconColor = splitted[2]
+                }
+            }
+            if (splitted.length > 3) {
+                if (splitted[3] !== '') {
+                    iconSize = parseInt(splitted[3], 10)
+                }
+            }
+            if (splitted.length > 4) {
+                if (splitted[4] === 'true' || splitted[4] === 'rounded') {
+                    iconRounded = true
+                }
+            }
         }
+
+        const roundedColor = palette.canvasColor
+        const roundedSize = iconSize / 6 * 4
 
         let view = null
         if (iconSetName === 'MaterialIcons') {
             view = <VectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'Entypo') {
             view = <EntypoVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'EvilIcons') {
             view = <EvilIconsVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'FontAwesome') {
             view = <FontAwesomeVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'Foundation') {
             view = <FoundationVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'Ionicons') {
             view = <IoniconsVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'MaterialCommunityIcons') {
             view = <MaterialCommunityIconsVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'Octicons') {
             view = <OcticonsVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'Zocial') {
             view = <ZocialVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         } else if (iconSetName === 'SimpleLineIcons') {
             view = <SimpleLineIconsVectorIcon
                 name={iconName}
-                size={iconSize}
-                color={iconColor}
+                size={iconRounded ? roundedSize : iconSize}
+                color={iconRounded ? roundedColor : iconColor}
                 style={style}
             />
         }
 
-        return view
+        if (iconRounded) {
+            return (
+                <View style={{ backgroundColor: iconColor, width: iconSize, height: iconSize, borderRadius: iconSize / 2, justifyContent: 'center', alignItems: 'center' }}>
+                    {view}
+                </View>
+            )
+        } else {
+            return view
+        }
     }
 }
 
