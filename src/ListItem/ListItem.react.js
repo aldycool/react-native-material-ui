@@ -202,6 +202,13 @@ class ListItem extends PureComponent {
             onPress(onPressValue);
         }
     };
+    onListItemLongPressed = () => {
+        const { onLongPress, onLongPressValue } = this.props;
+
+        if (onLongPress) {
+            onLongPress(onLongPressValue);
+        }
+    };
     onLeftElementPressed = () => {
         const { onLeftElementPress, onPress, onPressValue } = this.props;
 
@@ -361,21 +368,32 @@ class ListItem extends PureComponent {
         </View>
     )
     render() {
-        const { onPress } = this.props;
+        const { onPress, onLongPress } = this.props;
 
         const styles = getStyles(this.props, this.context, this.state);
 
         // renders left element, center element and right element
         let content = this.renderContent(styles);
 
-        if (onPress) {
+        if (onPress && !onLongPress) {
             content = (
                 <RippleFeedback delayPressIn={50} onPress={this.onListItemPressed}>
                     {content}
                 </RippleFeedback>
             );
+        } else if (!onPress && onLongPress) {
+            content = (
+                <RippleFeedback delayLongPress={500} onLongPress={this.onListItemLongPressed}>
+                    {content}
+                </RippleFeedback>
+            );
+        } else if (onPress && onLongPress) {
+            content = (
+                <RippleFeedback delayPressIn={50} onPress={this.onListItemPressed} delayLongPress={500} onLongPress={this.onListItemLongPressed}>
+                    {content}
+                </RippleFeedback>
+            );
         }
-
 
         return (
             <View>
